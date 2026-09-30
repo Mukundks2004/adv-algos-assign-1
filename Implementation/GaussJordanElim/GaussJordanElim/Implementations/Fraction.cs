@@ -1,4 +1,6 @@
-﻿namespace GaussJordanElim;
+﻿using GaussJordanElim.Abstractions;
+
+namespace GaussJordanElim.Implementations;
 
 internal class Fraction : IField<Fraction>
 {
@@ -34,6 +36,29 @@ internal class Fraction : IField<Fraction>
 		this.numerator = numerator;
 		this.denominator = denominator;
 	}
+
+	public Fraction Clone() => new(numerator, denominator);
+
+	public bool Equals(Fraction? other)
+	{
+		if (other is null)
+		{
+			return false;
+		}
+
+		Simplify();
+		other.Simplify();
+
+		return numerator == other.numerator && denominator == other.denominator;
+	}
+
+	public override bool Equals(object? obj) => obj is Fraction other && Equals(other);
+
+	public override int GetHashCode() => HashCode.Combine(numerator, denominator);
+
+	public static bool operator ==(Fraction? a, Fraction? b) => a?.Equals(b) ?? b is null;
+
+	public static bool operator !=(Fraction? a, Fraction? b) => !(a == b);
 
 	public static Fraction operator +(Fraction left, Fraction right)
 	{
@@ -71,31 +96,6 @@ internal class Fraction : IField<Fraction>
 
 		return new Fraction(numerator, denominator);
 	}
-
-	public object Clone()
-	{
-		return new Fraction(numerator, denominator);
-	}
-
-	public bool Equals(Fraction? other) {
-		if (other is null)
-		{
-			return false;
-		}
-
-		Simplify();
-		other.Simplify();
-
-		return numerator == other.numerator && denominator == other.denominator;
-	}
-
-	public override bool Equals(object? obj) => obj is Fraction other && Equals(other);
-
-	public override int GetHashCode() => HashCode.Combine(numerator, denominator);
-
-	public static bool operator ==(Fraction? a, Fraction? b) => a?.Equals(b) ?? b is null;
-
-	public static bool operator !=(Fraction? a, Fraction? b) => !(a == b);
 
 	public bool IsOne() => numerator == denominator;
 

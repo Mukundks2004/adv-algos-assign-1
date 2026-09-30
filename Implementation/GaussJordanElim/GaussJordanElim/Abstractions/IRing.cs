@@ -1,4 +1,4 @@
-﻿namespace GaussJordanElim;
+﻿namespace GaussJordanElim.Abstractions;
 
 /* Unfortunately I have to use this ugly and broken self referential interface here, 
  * the core problem is that we want a Ring to be indexed by a type T- this is a loose
