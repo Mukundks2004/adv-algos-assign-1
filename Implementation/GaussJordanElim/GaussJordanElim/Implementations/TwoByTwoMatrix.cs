@@ -33,7 +33,12 @@ internal class TwoByTwoMatrix<T> : IField<TwoByTwoMatrix<T>> where T : IRing<T>
 
 	public bool Equals(TwoByTwoMatrix<T>? other)
 	{
-		throw new NotImplementedException();
+		if (other is null)
+		{
+			return false;
+		}
+
+		return a.Equals(other.a) && b.Equals(other.b) && c.Equals(other.c) && d.Equals(other.d);
 	}
 
 	public override bool Equals(object? obj) => obj is TwoByTwoMatrix<T> other && Equals(other);
@@ -46,12 +51,12 @@ internal class TwoByTwoMatrix<T> : IField<TwoByTwoMatrix<T>> where T : IRing<T>
 
 	public static TwoByTwoMatrix<T> operator +(TwoByTwoMatrix<T> left, TwoByTwoMatrix<T> right)
 	{
-		throw new NotImplementedException();
+		return new TwoByTwoMatrix<T>(left.a + right.a, left.b + right.b, left.c + right.c, left.d + right.d);
 	}
 
 	public static TwoByTwoMatrix<T> operator -(TwoByTwoMatrix<T> left, TwoByTwoMatrix<T> right)
 	{
-		throw new NotImplementedException();
+		return new TwoByTwoMatrix<T>(left.a - right.a, left.b - right.b, left.c - right.c, left.d - right.d);
 	}
 
 	public static TwoByTwoMatrix<T> operator *(TwoByTwoMatrix<T> left, TwoByTwoMatrix<T> right)
