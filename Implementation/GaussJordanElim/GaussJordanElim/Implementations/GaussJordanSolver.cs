@@ -4,7 +4,7 @@ namespace GaussJordanElim.Implementations;
 
 internal class GaussJordanSolver : IMatrixSolver
 {
-	public T[] Solve<T>(T[,] matrix) where T : IMatrixEntry<T>
+	public T[,] Solve<T>(T[,] matrix) where T : IMatrixEntry<T>
 	{
 		// The pivot column needs to be stored outside the main elimination loop since it depends
 		// on the last pivot column from previous elimination rounds
@@ -105,6 +105,6 @@ internal class GaussJordanSolver : IMatrixSolver
 			pivotColumnIndex++;
 		}
 
-		throw new NotImplementedException();
+		return matrix;
 	}
 }

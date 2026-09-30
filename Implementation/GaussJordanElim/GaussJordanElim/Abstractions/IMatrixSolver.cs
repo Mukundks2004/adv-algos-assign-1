@@ -2,5 +2,5 @@
 
 internal interface IMatrixSolver
 {
-	T[] Solve<T>(T[,] matrix) where T : IMatrixEntry<T>;
+	T[,] Solve<T>(T[,] matrix) where T : IMatrixEntry<T>;
 }
