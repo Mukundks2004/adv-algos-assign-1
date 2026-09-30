@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace GaussJordanElim;
+﻿namespace GaussJordanElim;
 
 internal static class MatrixUtils
 {
@@ -48,7 +46,7 @@ internal static class MatrixUtils
 		}
 	}
 
-	public static T[,] Clone<T>(T[,] original) where T : IDeepCloneable<T>, new()
+	public static T[,] Clone<T>(T[,] original) where T : class, IDeepCloneable<T>, new()
 	{
 		var result = MakeEmptyArray<T>(original.GetLength(0), original.GetLength(1));
 
@@ -62,4 +60,35 @@ internal static class MatrixUtils
 
 		return result;
 	}
+
+	public static T?[,] CloneNullable<T>(T?[,] original) where T : class, IDeepCloneable<T>, new()
+	{
+		var result = MakeEmptyArray<T?>(original.GetLength(0), original.GetLength(1));
+
+		for (int i = 0; i < result.GetLength(0); i++)
+		{
+			for (int j = 0; j < result.GetLength(1); j++)
+			{
+				result[i, j] = original[i, j]?.Clone();
+			}
+		}
+
+		return result;
+	}
+
+	public static void PrintVector<T>(T[] vector) where T : class
+	{
+		foreach (var v in vector)
+		{
+			Console.Write(v.ToString() + " ");
+		}
+
+		Console.WriteLine();
+	}
+
+	//public static T[,] AdjoinVectorToMatrix(Task[,])
+
+	public static T Get<T>(T[,] matrix, int row, int col) => matrix[row, col];
+
+	public static int CountNulls<T>(T[,] array) => array.Cast<T>().Count(element => element == null);
 }
