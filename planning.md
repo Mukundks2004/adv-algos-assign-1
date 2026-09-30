@@ -109,4 +109,10 @@ The total mark is divided as follows:
 
 First we choose the actual algorithm, I like maths so I am going to choose the Gauss Jordan elimination. I already have a good idea of how this works so I don't need to spend time reading.
 
+For track, let's choose B.
+
+We'll use it in a magic square tool, but also give the user an option to toggle between magic square mode and raw Gauss Jordan mode.
+
+Either way, we have to do the base implementation before we choose a track so let's do that.
+
 -
