@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace GaussJordanElim;
+﻿namespace GaussJordanElim;
 
 internal class Fraction : IField<Fraction>
 {
