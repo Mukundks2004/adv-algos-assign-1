@@ -2,7 +2,7 @@
 
 internal static class MatrixUtils
 {
-	public static T[,] MakeEmptyArray<T>(int rows, int cols) where T : new()
+	public static T[,] MakeEmptyMatrix<T>(int rows, int cols) where T : new()
 	{
 		var res = new T[rows, cols];
 
@@ -12,18 +12,6 @@ internal static class MatrixUtils
 			{
 				res[i, j] = new T();
 			}
-		}
-
-		return res;
-	}
-
-	public static T[] MakeEmptyVector<T>(int length) where T : new()
-	{
-		var res = new T[length];
-
-		for (int i = 0; i < length; i++)
-		{
-			res[i] = new T();
 		}
 
 		return res;
@@ -48,7 +36,7 @@ internal static class MatrixUtils
 
 	public static T[,] Clone<T>(T[,] original) where T : class, IDeepCloneable<T>, new()
 	{
-		var result = MakeEmptyArray<T>(original.GetLength(0), original.GetLength(1));
+		var result = MakeEmptyMatrix<T>(original.GetLength(0), original.GetLength(1));
 
 		for (int i = 0; i < result.GetLength(0); i++)
 		{
@@ -63,7 +51,7 @@ internal static class MatrixUtils
 
 	public static T?[,] CloneNullable<T>(T?[,] original) where T : class, IDeepCloneable<T>, new()
 	{
-		var result = MakeEmptyArray<T?>(original.GetLength(0), original.GetLength(1));
+		var result = MakeEmptyMatrix<T?>(original.GetLength(0), original.GetLength(1));
 
 		for (int i = 0; i < result.GetLength(0); i++)
 		{
@@ -76,17 +64,35 @@ internal static class MatrixUtils
 		return result;
 	}
 
-	public static void PrintVector<T>(T[] vector) where T : class
+	public static T[,] AdjoinMatrices<T>(T[,] first, T[,] second) where T : IDeepCloneable<T>, new()
 	{
-		foreach (var v in vector)
+		int firstRows = first.GetLength(0);
+		int firstCols = first.GetLength(1);
+		int secondRows = second.GetLength(0);
+		int secondCols = second.GetLength(1);
+
+		if (firstRows != secondRows)
 		{
-			Console.Write(v.ToString() + " ");
+			throw new ArgumentException($"First matrix has {firstRows} rows, while second has {secondRows} rows, these cannot be adjoined");
 		}
 
-		Console.WriteLine();
-	}
+		T[,] result = MakeEmptyMatrix<T>(firstRows, firstCols + secondCols);
 
-	//public static T[,] AdjoinVectorToMatrix(Task[,])
+		for (int i = 0; i < firstRows; i++)
+		{
+			for (int j = 0; j < firstCols; j++)
+			{
+				result[i, j] = first[i, j].Clone();
+			}
+
+			for (int j = 0; j < secondCols; j++)
+			{
+				result[i, firstCols + j] = second[i, j].Clone();
+			}
+		}
+
+		return result;
+	}
 
 	public static T Get<T>(T[,] matrix, int row, int col) => matrix[row, col];
 
