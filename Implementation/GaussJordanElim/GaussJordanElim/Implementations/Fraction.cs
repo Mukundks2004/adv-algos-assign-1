@@ -2,7 +2,7 @@
 
 namespace GaussJordanElim.Implementations;
 
-internal class Fraction : IField<Fraction>
+internal class Fraction : IMatrixEntry<Fraction>
 {
 	int numerator;
 	int denominator;
@@ -60,6 +60,10 @@ internal class Fraction : IField<Fraction>
 
 	public static bool operator !=(Fraction? a, Fraction? b) => !(a == b);
 
+	public bool IsZero() => numerator == 0;
+
+	public bool IsOne() => numerator == denominator;
+
 	public static Fraction operator +(Fraction left, Fraction right)
 	{
 		int denominator = left.denominator * right.denominator;
@@ -96,10 +100,6 @@ internal class Fraction : IField<Fraction>
 
 		return new Fraction(numerator, denominator);
 	}
-
-	public bool IsOne() => numerator == denominator;
-
-	public bool IsZero() => numerator == 0;
 
 	public override string ToString()
 	{

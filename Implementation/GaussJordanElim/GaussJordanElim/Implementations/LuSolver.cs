@@ -2,9 +2,9 @@
 
 namespace GaussJordanElim.Implementations;
 
-internal class LuSolver : ISolver
+internal class LuSolver : IMatrixSolver
 {
-	public T[] Solve<T>(T?[,] matrix)
+	public T[] Solve<T>(T[,] matrix) where T : IMatrixEntry<T>
 	{
 		throw new NotImplementedException();
 	}
