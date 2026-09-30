@@ -30,4 +30,36 @@ internal static class MatrixUtils
 
 		return res;
 	}
+
+	public static void PrintMatrix<T>(T?[,] matrix)
+	{
+		int rows = matrix.GetLength(0);
+		int cols = matrix.GetLength(1);
+
+		for (int i = 0; i < rows; i++)
+		{
+			for (int j = 0; j < cols; j++)
+			{
+				var cell = matrix[i, j];
+				Console.Write($"{(cell == null ? "?  " : cell.ToString())} ");
+			}
+
+			Console.Write(Environment.NewLine);
+		}
+	}
+
+	public static T[,] Clone<T>(T[,] original) where T : IDeepCloneable<T>, new()
+	{
+		var result = MakeEmptyArray<T>(original.GetLength(0), original.GetLength(1));
+
+		for (int i = 0; i < result.GetLength(0); i++)
+		{
+			for (int j = 0; j < result.GetLength(1); j++)
+			{
+				result[i, j] = original[i, j].Clone();
+			}
+		}
+
+		return result;
+	}
 }

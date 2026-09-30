@@ -10,7 +10,7 @@
  * can return a different type of IRing, but this is better than no guarantee of
  * returning an IRing at all.
  */
-internal interface IRing<T> : IEquatable<T>, ICloneable where T : IRing<T>
+internal interface IRing<T> : IEquatable<T>, IDeepCloneable<T> where T : IRing<T>
 {
 	static abstract T operator +(T left, T right);
 	static abstract T operator -(T left, T right);
