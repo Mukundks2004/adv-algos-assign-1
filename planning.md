@@ -1,25 +1,25 @@
-## Planning
+# Planning
 
 Ok lets think about what the assignment spec is and what we actually have to do...
 
 There are 4 deliverables:
 
-### Working Implementation
+## Working Implementation
 
 This is a ton of code in a repo (this one). It has to be in a single repository, with a README explaining how to build and run it.
 When I'm finished I'll push it to GitHub.
 
-### Track Specific Artifact
+## Track Specific Artifact
 
 Track A: the benchmarking harness, data generation, and results;
 Track B: the working tool with its interface (I want to do this!)
 Track C: the correctness commentary (this is also really cool, I am a big fan of lean but legitimately do not know if I have the time to do this. There is another problem with this, which is that I would want to develop everything in C or C++ or C#, but to interface with a language where I can do serious theorem proving, like Idris (through foreign function interface) or Lean, I would need some kind of dodgy wiring. I can do it natively in Coq but I don't know Coq.).
 
-### A Written Report
+## A Written Report
 
 It must be structured as follows:
 
-#### What Did I Build
+### What Did I Build
 
 A short description of the algorithm or data structure that was implemented and the key design decisions I made.
 
@@ -30,7 +30,7 @@ This must include
 3. any simplifications or extensions relative to the textbook version
 4. anything a reader needs to know to navigate the code
 
-#### Track Specific Writeup
+### Track Specific Writeup
 
 This part is again relative to which track you choose:
 
@@ -55,7 +55,7 @@ Track C is awesome but a shame I won't be using it:
 - The correctness commentary
 - A summary of the commentary if it lives in the code (damn, this guy really wants us to use lean :P it is a shame, I'll do it for the next assignment maybe)
 
-#### What I Learned
+### What I Learned
 
 - What surprised you?
 - What did you initially get wrong?
@@ -63,7 +63,7 @@ Track C is awesome but a shame I won't be using it:
 
 > Specific examples carry far more weight than general statements. A sentence like "I eas surprised that the Fibonacci heap was slower than std::priority_queue on every workload I tried, and I now believe this is because of cache behaviour" is the kind of content that is being looked for.
 
-#### AI use
+### AI use
 
 The AI use section must address the following:
 
@@ -75,7 +75,16 @@ The AI use section must address the following:
 
 The goal here is honest engagement, not performance. For another example of a student who is doing what the assignment is asking for, consider the comment: "I used claude heavily, it produced a working implementation in an hour, but then I spent ten hours benchmarking and discovered the implementation had a subtle off-by-one in the merge operation that only showed up on certain inputs".
 
-### Video Walkthrough
+## Video Walkthrough
+
+We also need to record a 3-5 minute screencast walking through the implementation with the code on screen and the voice explaining it. The video must cover the following:
+
+- The core of the implementation, where the main algorithm lives in the code and how it is organized
+- One tricky part: the piece of the code I found hardest to get right and why
+- One invariant: state the invariant, show where it is established and show where it is relied on
+- One "what breaks" example: pick a specific line or step, and explain what would go on if it were removed
+
+Production quality of the video does not matter at all
 
 ## Choice
 
