@@ -11,4 +11,7 @@ internal interface IRing<T> where T : IRing<T>
 	static abstract T operator +(T left, T right);
 	static abstract T operator -(T left, T right);
 	static abstract T operator *(T left, T right);
+
+	bool IsOne();
+	bool IsZero();
 }
