@@ -50,13 +50,18 @@ Track B is more minimal:
 - How did I make the interface decisions for connecting the tool to user input (UI)
 - Worked example of it in use
 
-- track specific artifact
-- a written report
-  - what I built
-  - track specific writeup
-  - what I learnt
-  - AI use
-- video walkthrough of demonstration
+Track C is awesome but a shame I won't be using it:
+
+- The correctness commentary
+- A summary of the commentary if it lives in the code (damn, this guy really wants us to use lean :P it is a shame, I'll do it for the next assignment maybe)
+
+#### What I Learned
+
+- What surprised you?
+- What did you initially get wrong?
+- What is something you understand now that you didn't before starting?
+
+> Specific examples carry far more weight than general statements. A sentence like "I eas surprised that the Fibonacci heap was slower than std::priority_queue on every workload I tried, and I now believe this is because of cache behaviour" is the kind of content that is being looked for.
 
 ## Choice
 
