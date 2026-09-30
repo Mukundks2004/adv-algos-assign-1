@@ -1,20 +1,22 @@
-﻿namespace GaussJordanElim;
+﻿using System.Runtime.CompilerServices;
+
+namespace GaussJordanElim;
 
 internal class Fraction : IField<Fraction>
 {
-	readonly int numerator;
-	readonly int denominator;
+	public int Numerator { get; }
+	public int Denominator { get; }
 
 	public Fraction()
 	{
-		numerator = 0;
-		denominator = 0;
+		Numerator = 0;
+		Denominator = 0;
 	}
 
 	public Fraction(int numerator)
 	{
-		this.numerator = numerator;
-		denominator = 1;
+		this.Numerator = numerator;
+		Denominator = 1;
 	}
 
 	public Fraction(int numerator, int denominator)
@@ -24,27 +26,44 @@ internal class Fraction : IField<Fraction>
 			throw new DivideByZeroException();
 		}
 
-		this.numerator = numerator;
-		this.denominator = denominator;
+		this.Numerator = numerator;
+		this.Denominator = denominator;
 	}
 
 	public static Fraction operator +(Fraction left, Fraction right)
 	{
-		return new Fraction();
+		int denominator = left.Denominator * right.Denominator;
+		int numerator = (left.Numerator * right.Denominator) + (left.Denominator * right.Numerator);
+
+		return new Fraction(numerator, denominator);
 	}
 
 	public static Fraction operator -(Fraction left, Fraction right)
 	{
-		throw new NotImplementedException();
+		int denominator = left.Denominator * right.Denominator;
+		int numerator = (left.Numerator * right.Denominator) - (left.Denominator * right.Numerator);
+
+		return new Fraction(numerator, denominator);
 	}
 
 	public static Fraction operator *(Fraction left, Fraction right)
 	{
-		throw new NotImplementedException();
+		int denominator = left.Denominator * right.Denominator;
+		int numerator = left.Numerator * right.Numerator;
+
+		return new Fraction(numerator, denominator);
 	}
 
 	public static Fraction operator /(Fraction left, Fraction right)
 	{
-		throw new NotImplementedException();
+		if (right.Numerator == 0)
+		{
+			throw new DivideByZeroException();
+		}
+
+		int numerator = left.Numerator * right.Denominator;
+		int denominator = left.Denominator * right.Numerator;
+
+		return new Fraction(numerator, denominator);
 	}
 }
