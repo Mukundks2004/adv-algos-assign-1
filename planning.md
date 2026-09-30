@@ -94,6 +94,17 @@ A student who used AI heavily and can explain the submission is in a fine positi
 
 If the video raises questions, or the gap between the polish of the submission and the walkthrough is hard to explain, Troy may invite you to a short live follow up where we look at the code with Troy. If the conversation reveals a serious gap between the submission and my understanding of it, Troy may adjust the relevant components of the mark accordingly.
 
+## Grading
+
+The total mark is divided as follows:
+
+- Implementation correctness and quality is 25%- does it work, is it reasonably clean, does it handle edge cases?
+- Track-specific work is 45%- the quality of the empirical study, the tool, or the correctness commentary
+- Report quality is 20%- clarity, structure, depth of reflection in the "what I learned" section
+- AI use disclosure is 10%- honesty and specificity of the AI use section
+
+> The "What I learned" content in the report and the AI usage section together form a substantial fraction of the grade.
+
 ## Choice
 
 First we choose the actual algorithm, I like maths so I am going to choose the Gauss Jordan elimination. I already have a good idea of how this works so I don't need to spend time reading.
