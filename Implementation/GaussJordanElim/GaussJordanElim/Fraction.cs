@@ -5,6 +5,13 @@ internal class Fraction : IField<Fraction>
 	int numerator;
 	int denominator;
 
+	static readonly Fraction zero = new();
+	static readonly Fraction one = new(1);
+
+	public static Fraction Zero => zero;
+
+	public static Fraction One => one;
+
 	public Fraction()
 	{
 		numerator = 0;
@@ -64,6 +71,31 @@ internal class Fraction : IField<Fraction>
 
 		return new Fraction(numerator, denominator);
 	}
+
+	public object Clone()
+	{
+		return new Fraction(numerator, denominator);
+	}
+
+	public bool Equals(Fraction? other) {
+		if (other is null)
+		{
+			return false;
+		}
+
+		Simplify();
+		other.Simplify();
+
+		return numerator == other.numerator && denominator == other.denominator;
+	}
+
+	public override bool Equals(object? obj) => obj is Fraction other && Equals(other);
+
+	public override int GetHashCode() => HashCode.Combine(numerator, denominator);
+
+	public static bool operator ==(Fraction? a, Fraction? b) => a?.Equals(b) ?? b is null;
+
+	public static bool operator !=(Fraction? a, Fraction? b) => !(a == b);
 
 	public bool IsOne() => numerator == denominator;
 

@@ -5,13 +5,17 @@
  * condition and a common requirement when designing an API. However, we have the
  * additional requirement that an IRing added to the same type of IRing produces the
  * same type of IRing. This "sameness" is impossible to encode without self reference.
+ * 
+ * Even with self reference it is flawed, as an IRing added to the same type of IRing
+ * can return a different type of IRing, but this is better than no guarantee of
+ * returning an IRing at all.
  */
-internal interface IRing<T> where T : IRing<T>
+internal interface IRing<T> where T : IRing<T>, IEquatable<T>, ICloneable
 {
 	static abstract T operator +(T left, T right);
 	static abstract T operator -(T left, T right);
 	static abstract T operator *(T left, T right);
 
-	bool IsOne();
-	bool IsZero();
+	static abstract T Zero { get; }
+	static abstract T One { get; }
 }
