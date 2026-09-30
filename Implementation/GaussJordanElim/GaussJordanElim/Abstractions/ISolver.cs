@@ -1,6 +1,6 @@
 ﻿namespace GaussJordanElim.Abstractions;
 
-internal interface ILinearEquationsSolver
+internal interface ISolver
 {
 	T[] Solve<T>(T?[,] matrix);
 }

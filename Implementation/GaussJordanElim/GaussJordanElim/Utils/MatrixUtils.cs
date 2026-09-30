@@ -1,6 +1,6 @@
 ﻿using GaussJordanElim.Abstractions;
 
-namespace GaussJordanElim;
+namespace GaussJordanElim.Utils;
 
 internal static class MatrixUtils
 {
