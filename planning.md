@@ -84,7 +84,15 @@ We also need to record a 3-5 minute screencast walking through the implementatio
 - One invariant: state the invariant, show where it is established and show where it is relied on
 - One "what breaks" example: pick a specific line or step, and explain what would go on if it were removed
 
-Production quality of the video does not matter at all
+Production quality of the video does not matter at all. A single take with no editing is what is expected, do not spend time on slides or editing Submit the video file or an unlisted link alongside the repo.
+
+The purpose of the video is to make one thing visible- can I explain my own code?
+
+Given the AI policy, every line of code being self written is not expected, but "I can walk you through what this does and why it is correct" is expected.
+
+A student who used AI heavily and can explain the submission is in a fine position, but a student who cannot explain is not regardless of how it is produced.
+
+If the video raises questions, or the gap between the polish of the submission and the walkthrough is hard to explain, Troy may invite you to a short live follow up where we look at the code with Troy. If the conversation reveals a serious gap between the submission and my understanding of it, Troy may adjust the relevant components of the mark accordingly.
 
 ## Choice
 
