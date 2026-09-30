@@ -63,6 +63,20 @@ Track C is awesome but a shame I won't be using it:
 
 > Specific examples carry far more weight than general statements. A sentence like "I eas surprised that the Fibonacci heap was slower than std::priority_queue on every workload I tried, and I now believe this is because of cache behaviour" is the kind of content that is being looked for.
 
+#### AI use
+
+The AI use section must address the following:
+
+- Which tools were used and roughly how much were they used. The example given is "Claude was used for the implementation and ChatGPT was used for the matplotlib API", this amount of detail is good.
+- What did I use them for? For example, scaffolding the implementation, debugging, writing tests, generating plot code, drafting parts of the report, explaining concepts I didn't understand and so on
+- At least two specific examples of where the AI was wrong, unhelpful, or misleading- and then, what I did about it. For example, the API may be hallucinated, the implementation may be wrong or buggy, an explanation might be wrong or even misleading, a benchmark might not measure what it aims to, or any of the other ways AIs can go wrong.
+  - Every student that uses these tools will encounter such cases. If you can't think of any, you probably didn't use the tools enough- or used them without checking the output, which is the failure mode these tests are designed to catch.
+- What was understood truly when the output was generated vs what was taken on trust. Be honest about parts of the code or analysis where we are not fully sure what the AI produced is correct. This is not penalized, this is expected. What is penalized is claiming to understand something we didn't.
+
+The goal here is honest engagement, not performance. For another example of a student who is doing what the assignment is asking for, consider the comment: "I used claude heavily, it produced a working implementation in an hour, but then I spent ten hours benchmarking and discovered the implementation had a subtle off-by-one in the merge operation that only showed up on certain inputs".
+
+### Video Walkthrough
+
 ## Choice
 
 First we choose the actual algorithm, I like maths so I am going to choose the Gauss Jordan elimination. I already have a good idea of how this works so I don't need to spend time reading.
