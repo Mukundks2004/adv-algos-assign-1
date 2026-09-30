@@ -2,12 +2,10 @@
 
 namespace GaussJordanElim.Implementations;
 
-internal class GaussJordanSolver : ISolver
+internal class LuSolver : ISolver
 {
 	public T[] Solve<T>(T?[,] matrix)
 	{
-		var rows = matrix.GetLength(0);
-
 		throw new NotImplementedException();
 	}
 }
