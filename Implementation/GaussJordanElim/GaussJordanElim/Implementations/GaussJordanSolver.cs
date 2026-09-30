@@ -15,7 +15,8 @@ internal class GaussJordanSolver : IMatrixSolver
 
 		// 1) The elimination process occurs row by row. We move down rows and never backtrack.
 		// With each row, the goal is to firstly give the row a leading 1, secondly make every
-		// other row with the same column (as the leading 1) a 0.
+		// other row with the same column (as the leading 1) a 0. This column is the pivot column
+		// and for a given row, when giving the row a leading 1, the cell in this column is the pivot.
 		for (int rowToGiveLeading1Index = 0; rowToGiveLeading1Index < rowCount; rowToGiveLeading1Index++)
 		{
 			// This 'if' statement coupled with the increment at the end of the main loop is the
@@ -92,11 +93,14 @@ internal class GaussJordanSolver : IMatrixSolver
 					// We don't want to zero the current row
 					if (rowToZeroIndex != rowToGiveLeading1Index)
 					{
-
+						T amountToSubtractToZeroColumn = matrix[rowToZeroIndex, pivotColumnIndex];
+						for (int columnInRowToZeroIndex = pivotColumnIndex; columnInRowToZeroIndex < colCount; columnInRowToZeroIndex++)
+						{
+							matrix[rowToZeroIndex, columnInRowToZeroIndex] = matrix[rowToZeroIndex, columnInRowToZeroIndex] - amountToSubtractToZeroColumn * matrix[rowToGiveLeading1Index, columnInRowToZeroIndex];
+						}
 					}
 				}
 			}
-
 
 			pivotColumnIndex++;
 		}
