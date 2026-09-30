@@ -64,4 +64,6 @@ internal class Real : IField<Real>
 
 		return new(left.backingValue / right.backingValue);
 	}
+
+	public override string ToString() => $"{backingValue:F2}";
 }
