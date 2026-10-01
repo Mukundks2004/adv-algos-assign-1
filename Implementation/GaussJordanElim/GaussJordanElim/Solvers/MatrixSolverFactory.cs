@@ -10,6 +10,7 @@ internal static class MatrixSolverFactory
 		{
 			SolveType.GaussJordan => new GaussJordanSolver<T>(),
 			SolveType.Lu => new LuSolver<T>(),
+			SolveType.MagicSquare => new MagicSquareSolver<T>(),
 			_ => throw new ArgumentOutOfRangeException(nameof(solveType), solveType, "Unsupported solve type"),
 		};
 	}
