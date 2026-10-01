@@ -5,7 +5,9 @@ namespace GaussJordanElim.Solvers;
 
 internal class MagicSquareSolver<T> : IMatrixSolver<T> where T : class, IMatrixEntry<T>, new()
 {
-	public T[,] Solve(T?[,] square)
+	public T[,] Solve(T?[,] square) => SolveWithSteps(square).Result;
+
+	public (T[,] Result, List<SolverStep<T>> Steps) SolveWithSteps(T?[,] square)
 	{
 		// Size is also referred to as 'n'
 		var size = square.GetLength(0);
@@ -16,8 +18,18 @@ internal class MagicSquareSolver<T> : IMatrixSolver<T> where T : class, IMatrixE
 			throw new ArgumentException($"Magic square is not a square size, instead has {size} rows and {cols} columns.");
 		}
 
+		var steps = new List<SolverStep<T>>();
+
 		var coefficientsMatrix = GenerateCoefficientsMatrixForMagicSquare(size);
+		steps.Add(new SolverStep<T>(MatrixUtils.Clone(coefficientsMatrix), $"Generated the coefficients for the system of linear equations describing every row, column and diagonal sum of the {size} x {size} magic square (the final column holds the -1 coefficient for the magic sum)"));
+
 		var variableCount = MatrixUtils.CountNulls(square);
+
+		if (variableCount + 1 > 2 * size + 2)
+		{
+			throw new ArgumentException($"Not enough cells were given to uniquely determine the magic square: {variableCount} cells are unknown, which is too many to solve for with only {2 * size + 2} row/column/diagonal equations.");
+		}
+
 		var condensedCoefficientsMatrix = MatrixUtils.MakeEmptyMatrix<T>(size * 2 + 2, variableCount + 1);
 
 		// At this point in time, every n x n square has the same resultant matrix.
@@ -58,11 +70,17 @@ internal class MagicSquareSolver<T> : IMatrixSolver<T> where T : class, IMatrixE
 			condensedCoefficientsMatrix[row, variableCount] = T.Zero - T.One;
 		}
 
+		steps.Add(new SolverStep<T>(MatrixUtils.Clone(condensedCoefficientsMatrix), $"Condensed the coefficients by removing the columns for the {size * size - variableCount} known cells and folding their values into the constants (on the right of the augmented matrix below)"));
+
 		// Augment by joining the coefficients with the constants
 		var augmentedMatrix = MatrixUtils.JoinMatrices(condensedCoefficientsMatrix, constantsVector);
-		
+		steps.Add(new SolverStep<T>(MatrixUtils.Clone(augmentedMatrix), "Augmented the condensed coefficients matrix with the constants column, ready to solve for the unknown cells and the magic sum"));
+
 		var solver = new GaussJordanSolver<T>();
-		var solvedMatrix = solver.Solve(augmentedMatrix);
+		var (solvedMatrix, gaussJordanSteps) = solver.SolveWithSteps(augmentedMatrix);
+		steps.AddRange(gaussJordanSteps);
+
+		ValidateSolvedSystem(solvedMatrix, variableCount);
 
 		var result = MatrixUtils.MakeEmptyMatrix<T>(size, size);
 
@@ -85,7 +103,41 @@ internal class MagicSquareSolver<T> : IMatrixSolver<T> where T : class, IMatrixE
 			}
 		}
 
-		return result;
+		steps.Add(new SolverStep<T>(MatrixUtils.Clone(result), "Copied the given cells and the solved unknown cells back into the magic square"));
+
+		return (result, steps);
+	}
+
+	static void ValidateSolvedSystem(T[,] solvedMatrix, int variableCount)
+	{
+		int rowCount = solvedMatrix.GetLength(0);
+		int constantColumnIndex = variableCount + 1;
+
+		for (int i = 0; i <= variableCount; i++)
+		{
+			if (!solvedMatrix[i, i].IsOne())
+			{
+				throw new ArgumentException("Not enough cells were given to uniquely determine the magic square; more than one square satisfies the given cells.");
+			}
+		}
+
+		for (int row = 0; row < rowCount; row++)
+		{
+			bool allCoefficientsAreZero = true;
+			for (int col = 0; col <= variableCount; col++)
+			{
+				if (!solvedMatrix[row, col].IsZero())
+				{
+					allCoefficientsAreZero = false;
+					break;
+				}
+			}
+
+			if (allCoefficientsAreZero && !solvedMatrix[row, constantColumnIndex].IsZero())
+			{
+				throw new ArgumentException("The given cells are inconsistent; no magic square can satisfy all of the given values and sums.");
+			}
+		}
 	}
 
 	static T[,] GenerateCoefficientsMatrixForMagicSquare(int squareSize)
