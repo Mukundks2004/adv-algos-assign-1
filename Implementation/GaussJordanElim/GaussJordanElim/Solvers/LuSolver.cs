@@ -3,73 +3,71 @@ using GaussJordanElim.Utils;
 
 namespace GaussJordanElim.Solvers;
 
-internal class LuSolver : IMatrixSolver
+internal class LuSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>, new()
 {
-	public T[,] Solve<T>(T[,] matrix) where T : IMatrixEntry<T>, new()
+	/*
+	 * Some things to keep in mind about this method:
+	 * - Gauss Jordan tolerates an under determined system (and an overdetermined consistent
+	 * system iirc) and leaves free variables in place. LU decomp is meant for squares, 
+	 * so it will optimistically treat every column outside the n x n coefficient matrix as 
+	 * vectors to solve for and if there are fewer variables than pieces of information it
+	 * will fail outright
+	 */
+	public T[,] Solve(T[,] matrix)
 	{
 		int rowCount = matrix.GetLength(0);
 		int colCount = matrix.GetLength(1);
 
-		// Unlike Gauss-Jordan (which tolerates a rectangular/under-determined system and leaves
-		// free variables in place), LU decomposition factorizes a square coefficient matrix
-		// A = L * U. So the first n columns are treated as the n x n coefficient matrix, and any
-		// remaining columns are right hand side (b) vectors to solve for.
-		int n = rowCount;
+		int size = rowCount;
 
-		if (colCount < n)
+		if (colCount < rowCount)
 		{
-			throw new ArgumentException($"Matrix has {rowCount} rows but only {colCount} columns, cannot extract a square {rowCount}x{rowCount} coefficient matrix");
+			throw new ArgumentException($"Matrix has {rowCount} rows but only {colCount} columns, cannot extract a square {rowCount} x {rowCount} coefficient matrix");
 		}
 
-		// 1) Copy the coefficient columns into U (it will be reduced to upper triangular form)
-		// and start L as the identity (its unit diagonal is never eliminated). The augmented
-		// (right hand side) columns are copied separately into rhs so they can be permuted
-		// alongside A without disturbing the original input matrix.
-		T[,] u = MatrixUtils.MakeEmptyMatrix<T>(n, n);
-		T[,] l = MatrixUtils.MakeEmptyMatrix<T>(n, n);
-		T[,] rhs = MatrixUtils.MakeEmptyMatrix<T>(n, colCount - n);
+		// 1) Setup:
+		// a) U is pulled directly from the right n x n of the input matrix
+		// b) L is by default the identity matrix
+		// c) rhs is all the vectors to solve for augmented together
+		T[,] u = MatrixUtils.MakeEmptyMatrix<T>(size, size);
+		T[,] l = MatrixUtils.MakeEmptyMatrix<T>(size, size);
+		T[,] rhs = MatrixUtils.MakeEmptyMatrix<T>(size, colCount - size);
 
-		for (int row = 0; row < n; row++)
+		for (int row = 0; row < size; row++)
 		{
-			for (int col = 0; col < n; col++)
+			for (int col = 0; col < size; col++)
 			{
 				u[row, col] = matrix[row, col].Clone();
 			}
 
-			for (int col = n; col < colCount; col++)
+			for (int col = size; col < colCount; col++)
 			{
-				rhs[row, col - n] = matrix[row, col].Clone();
+				rhs[row, col - size] = matrix[row, col].Clone();
 			}
 
 			l[row, row] = T.One.Clone();
 		}
 
-		// 2) Doolittle's algorithm: this is the forward elimination half of Gauss-Jordan, column
-		// by column, except that instead of discarding the multiplier used to zero a cell we
-		// *record* it into L. Once column pivotIndex has been cleared below the diagonal, U holds
-		// the (partially) upper triangular matrix and L holds the multipliers required to
-		// reconstruct A = L * U.
-		for (int pivotIndex = 0; pivotIndex < n; pivotIndex++)
+		// 2) Converting L and U to lower and upper triangle form respectively via forward substitution
+		// similarly to the Gauss Jordan method, we need to ensure the pivot is non zero to enable 
+		// elementary row operations to clear the lower triangle of U. When a swap is made in U,
+		// a corresponding swap must be made in L and RHS to ensure the equations remain consistent.
+		for (int pivotIndex = 0; pivotIndex < size; pivotIndex++)
 		{
-			// If the pivot cell is zero we can't use it to eliminate the column below, so - just
-			// like Gauss-Jordan - we scan downward for the first usable non zero row and swap it
-			// into place. The swap must move the corresponding row of L (only the multipliers to
-			// the left of pivotIndex have been computed so far), U and rhs together so that every
-			// row still refers to the same original equation.
 			if (u[pivotIndex, pivotIndex].IsZero())
 			{
 				int swapRowIndex = pivotIndex + 1;
-				while (swapRowIndex < n && u[swapRowIndex, pivotIndex].IsZero())
+				while (swapRowIndex < size && u[swapRowIndex, pivotIndex].IsZero())
 				{
 					swapRowIndex++;
 				}
 
-				if (swapRowIndex == n)
+				if (swapRowIndex == size)
 				{
-					throw new ArgumentException("Matrix is singular, LU decomposition cannot proceed");
+					throw new ArgumentException("Matrix is singular so LU decomposition cannot work");
 				}
 
-				for (int col = 0; col < n; col++)
+				for (int col = 0; col < size; col++)
 				{
 					(u[pivotIndex, col], u[swapRowIndex, col]) = (u[swapRowIndex, col], u[pivotIndex, col]);
 				}
@@ -85,14 +83,15 @@ internal class LuSolver : IMatrixSolver
 				}
 			}
 
+			// Forward substitution algorithm is identical to Gauss Jordan
 			T pivotCell = u[pivotIndex, pivotIndex];
 
-			for (int rowToEliminateIndex = pivotIndex + 1; rowToEliminateIndex < n; rowToEliminateIndex++)
+			for (int rowToEliminateIndex = pivotIndex + 1; rowToEliminateIndex < size; rowToEliminateIndex++)
 			{
 				T multiplier = u[rowToEliminateIndex, pivotIndex] / pivotCell;
 				l[rowToEliminateIndex, pivotIndex] = multiplier;
 
-				for (int col = pivotIndex; col < n; col++)
+				for (int col = pivotIndex; col < size; col++)
 				{
 					u[rowToEliminateIndex, col] = u[rowToEliminateIndex, col] - (multiplier * u[pivotIndex, col]);
 				}
@@ -104,46 +103,48 @@ internal class LuSolver : IMatrixSolver
 		// (forward substitution - trivial since L has a unit diagonal), then U x = y (back
 		// substitution). This is the payoff of factorizing first: L and U are computed once and
 		// reused for every right hand side column.
-		T[,] result = MatrixUtils.MakeEmptyMatrix<T>(n, colCount);
+		T[,] result = MatrixUtils.MakeEmptyMatrix<T>(size, colCount);
 
-		for (int col = 0; col < n; col++)
+		for (int col = 0; col < size; col++)
 		{
 			result[col, col] = T.One.Clone();
 		}
 
 		for (int rhsColIndex = 0; rhsColIndex < rhs.GetLength(1); rhsColIndex++)
 		{
-			T[] y = new T[n];
+			// Each iteration here solves one column/coefficients vector, so you can 
+			// analyse the contents in isolation
+			T[] y = new T[size];
 
-			for (int row = 0; row < n; row++)
+			for (int row = 0; row < size; row++)
 			{
 				T sum = rhs[row, rhsColIndex].Clone();
 
 				for (int col = 0; col < row; col++)
 				{
-					sum = sum - (l[row, col] * y[col]);
+					sum -= (l[row, col] * y[col]);
 				}
 
 				y[row] = sum;
 			}
 
-			T[] x = new T[n];
+			T[] x = new T[size];
 
-			for (int row = n - 1; row >= 0; row--)
+			for (int row = size - 1; row >= 0; row--)
 			{
 				T sum = y[row].Clone();
 
-				for (int col = row + 1; col < n; col++)
+				for (int col = row + 1; col < size; col++)
 				{
-					sum = sum - (u[row, col] * x[col]);
+					sum -= (u[row, col] * x[col]);
 				}
 
 				x[row] = sum / u[row, row];
 			}
 
-			for (int row = 0; row < n; row++)
+			for (int row = 0; row < size; row++)
 			{
-				result[row, n + rhsColIndex] = x[row];
+				result[row, size + rhsColIndex] = x[row];
 			}
 		}
 
