@@ -17,7 +17,7 @@ Instructions
 - `cd Implementation\GaussJordanElim\SolverApi`
 - `dotnet run --launch-profile http`
 
-This will serve on `localhost` on `5070` so make sure it is free.
+This will serve on `localhost` on `5070`.
 
 3. Build the frontend with:
 

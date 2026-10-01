@@ -208,7 +208,9 @@ while (matrix[candidateNonZeroCellRowIndex, pivotColumnIndex].IsZero())
 
 I made a mistake, incrementing a variable when I should have set it to `rowToGiveLeading1Index;`.
 
-I think my variable names, as much as I tried to be incredibly specific about what they were, were too long and often made it hard to read my own code quickly as the codebase got bigger. That contributed to how long it took me to find the above bug.
+I think my variable names, as much as I tried to be incredibly specific about what they were, were too long and often made it hard to read my own code quickly as the codebase got bigger. That contributed to how long it took me to find the above bug. Most of the code I write is business logic, so I can use english words for things and they make sense. But when switching to algorithms, all of a sudden there are these weird esoteric rules like "move this counter up until this condition then move it down until this other condition, and use it to index into this array" which is just how algorithms work, but it makes it difficult to name things if you are not used to it. Especially if it is not a "standard" algorithm with widely known jargon.
+
+https://martinfowler.com/bliki/TwoHardThings.html
 
 I didn't scope the requirements of the project accurately enough at the beginning which is why I had to change the interface a million times and waste time on refactors.
 
@@ -225,28 +227,48 @@ for (int columnIndex = 0; columnIndex < colCount; columnIndex++)
 
 This is a swap rows procedure, I only used it once or twice so I didn't need to put it into a function for the sake of DRY, but if I had encapsulated it in a `Swap()` method, it would be clear from a high level perspective that this code was performing an elementary row operation; 5 or 6 long lines becomes a single function call. This really only occured to me when I was doing the lean definitions and I had to be extremely specific and low level in translating code constructs into business objects.
 
+I also made lots of mistakes when programming the frontend/UI, but I feel like that falls beyond what this report is asking about.
+
 ## What is something you understand now that you didn't before starting?
 
 The biggest one is how the doolittle algorithm (part of LU solver) works, coming in I already knew GJ fairly well but learning doolittle/LU gave me a sense of scale. Now I know that forward/back substitution is a standard part of solving algorithms, and is common between Cholesky decomposition, QR decomposition, etc.
 
-Learning LU was good from an intuition perspective, because it is an algorithm traditionally executed via pen and paper in exams since it relies on a trick that hides how it works (similar to integration by parts, or the chain rule in maths) which is writing to L while eliminating in U, while preserving $L \cdot U = A$.
+Learning LU was good from an intuition perspective, because it is an algorithm traditionally executed via pen and paper in exams since it relies on a trick that hides how it works (similar to integration by parts, or the chain rule in maths) which is how writing to L row by row while eliminating in U preserves $L \cdot U = A$. It's a bit hard to explain, and most videos I watched glossed over it, but this one explains it pretty well.
 
-> Specific examples carry far more weight than general statements. A sentence like "I eas surprised that the Fibonacci heap was slower than std::priority_queue on every workload I tried, and I now believe this is because of cache behaviour" is the kind of content that is being looked for.
+https://www.youtube.com/watch?v=BFYFkn-eOQk
 
-### AI use
+I understand lean syntax much better than I started, that was my favourite part of the assignment but unfortunately I spent too much time on something that was effectively not getting me either progress nor marks. Despite not actually getting to do anything meaningful, when reading up I found it interesting that lean lets you program tactics in lean and then use them- this is not possible in both Agda and Idris. Additionally, lean is better equipped for general purpose programming than Agda, and if I had time I would have implemented the entire GJ algorithm in lean which would have helped prove things about it.
 
-The AI use section must address the following:
+# AI use
 
-- Which tools were used and roughly how much were they used. The example given is "Claude was used for the implementation and ChatGPT was used for the matplotlib API", this amount of detail is good.
-- What did I use them for? For example, scaffolding the implementation, debugging, writing tests, generating plot code, drafting parts of the report, explaining concepts I didn't understand and so on
-- At least two specific examples of where the AI was wrong, unhelpful, or misleading- and then, what I did about it. For example, the API may be hallucinated, the implementation may be wrong or buggy, an explanation might be wrong or even misleading, a benchmark might not measure what it aims to, or any of the other ways AIs can go wrong.
-  - Every student that uses these tools will encounter such cases. If you can't think of any, you probably didn't use the tools enough- or used them without checking the output, which is the failure mode these tests are designed to catch.
-- What was understood truly when the output was generated vs what was taken on trust. Be honest about parts of the code or analysis where we are not fully sure what the AI produced is correct. This is not penalized, this is expected. What is penalized is claiming to understand something we didn't.
+## Which tools were used and roughly how much were they used
 
-The goal here is honest engagement, not performance. For another example of a student who is doing what the assignment is asking for, consider the comment: "I used claude heavily, it produced a working implementation in an hour, but then I spent ten hours benchmarking and discovered the implementation had a subtle off-by-one in the merge operation that only showed up on certain inputs".
+The actual algorithms were both 100% written by me. For LU decomposition I used the video linked above as the base, and for GJ I winged it from my previous understanding. Everything written around these such as the `SolveWithSteps` framework, the contracts, the `ISolver` interface, the `MatrixElement`s, the organization/architecture was also written by me 100% without AI.
 
+But I did use AI heavily in this assignment.
+
+I used copilot to generate the WebApi, including the DTOs, Api Mapper, the Roman Numerals Converter for the steps and the Factory to instantiate solvers as a reflection substitute.
+
+I used copilot to debug and fix an out of bounds error that was caused by bad input (an unsolveable configuration). Some of these bugs still remain.
+
+I used copilot to generate the frontend, but had to iterate on it multiple times after my own attempts to program the UI fell through.
+
+I used copilot to generate some of the definitions in `Defs.lean` based on a detailed spec I wrote for it.
+
+## Examples where the AI was wrong/unhelpful
+
+The first one was an architectural misunderstanding. As part of creating the WebApi it needed a translation layer to take in loosely typed JSON data and enter it into the rock solid contractual ecosystem, so it whipped up a couple methods one being a "copy" method. This was a bit ridiculous because I already had a dedicated copy method hand written in the utils class. When questioned (I carefully review all AI output of course) it said the reason for creating a whole dedicated second utils class with one method was because at the call site, the indexing type `T` was not declared having constraint `class` (which stands for it being a reference type). This means there is a contention- you can't have a non reference type `T` work with the existing `Clone`. So either make a new `Clone`, which in this case took 40 or so lines and a new class. Or change `T` to give it the required constraint. Which is a one word change. This was a case of copilot not understanding that it had the authority to change a publicly shipped API, instead making the "safe" choice which only added code, at the cost of looking bizarre since it was essentially duplicated.
+
+An example of when the AI output was unhelpful was when it needed access to internal methods in one project (Core) from another (WebApi). Any ordinary developer would understand that it is totally illogical for an entire module to be private, and at least some kind of basic API must be exposed for it to be useful. Instead of making those members public, copilot chose to add a directive to make the internals of the second assembly accessible in the first- which is a bit hacky and incorrect.
+
+```cs
+[assembly: InternalsVisibleTo("SolverApi")]
 ```
-A linear equation is an expression of the form $k_1x_1 + k_2x_2 + k_3x_3 + ... + k_nx_n = y$. This expression is dependent on the variables $x_i$ but is linear in every variable, making it a linear equation. Linear equations are very important since many relationships in the real world are linear- for example, the relationship between speed and distance travelled over a fixed amount of time is linear.
 
-Often in the real world, there are multiple linear relationships that exist simultaneously as lots of quantities vary together and affect each other. For example, maybe cars have to pay 10 dollars to park and bikes have to pay 5. Both these quantities scale linearly. So the total amount of money the carpark generates is a product (not literally) of multiple linear variables.
-```
+Another example of when the AI was unhelpful was when I provided it a specification for some contracts, theorems and lemmas I would like, in line with a well rounded verification that would formally verify 10 or so invariants. The points to cover are in the README in the formalization folder. Copilot spent well over 2 hours (during which I was doing other things and not paying too much attention) generating an output and finally produced an extremely thorough series of headers, across 10 different files averaging about 300 lines per file. While this could have been caught if I were more specific with my prompt, or if I had been paying attention, it is also a mistake on the AI's part as the definitions file that was already present was barely 100 lines in size.
+
+## What Was Truly Understood?
+
+100% of it, every single line was meticulously reviewed and committed. I am ready to defend any piece of code in this repo.
+
+Except for the frontend stuff, I just wanted it to work so I hit go and stopped iterating when it looked good.
