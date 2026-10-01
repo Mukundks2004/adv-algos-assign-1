@@ -32,3 +32,17 @@ This will serve on `localhost` on `5070` so make sure it is free.
 5. It should look like this:
 
 ![Interface image](/Report/Resources/image.png)
+
+---
+
+## Examples
+
+![Example Gaussian](/Report/Resources/example_gauss_2.png)
+
+![Example Magic Square](/Report/Resources/exampleMagicSquare2.png)
+
+![AnotherExample](/Report/Resources/anotherEx.png)
+
+![Last Example](/Report/Resources/lastEx.png)
+
+![LUEx](/Report/Resources/luEx.png)
