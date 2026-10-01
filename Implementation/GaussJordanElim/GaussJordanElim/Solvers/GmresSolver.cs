@@ -2,7 +2,7 @@
 
 namespace GaussJordanElim.Solvers;
 
-internal class GmresSolver : IMatrixSolver
+internal class GmresSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>, new()
 {
 	public GmresSolverParams Params { get; }
 
@@ -11,7 +11,7 @@ internal class GmresSolver : IMatrixSolver
 
 	}
 
-	public T[,] Solve<T>(T[,] matrix) where T : IMatrixEntry<T>, new()
+	public T[,] Solve(T[,] matrix)
 	{
 		throw new NotImplementedException();
 	}
