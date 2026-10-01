@@ -52,6 +52,10 @@ internal class TwoByTwoMatrix<T> : IField<TwoByTwoMatrix<T>> where T : IMatrixEn
 
 	public static bool operator !=(TwoByTwoMatrix<T>? a, TwoByTwoMatrix<T>? b) => !(a == b);
 
+	public bool IsZero() => this == zero;
+
+	public bool IsOne() => this == one;
+
 	public static TwoByTwoMatrix<T> operator +(TwoByTwoMatrix<T> left, TwoByTwoMatrix<T> right)
 	{
 		return new TwoByTwoMatrix<T>(left.a + right.a, left.b + right.b, left.c + right.c, left.d + right.d);
