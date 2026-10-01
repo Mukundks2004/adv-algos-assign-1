@@ -2,7 +2,7 @@
 
 namespace GaussJordanElim.MatrixEntities;
 
-internal class Real : IField<Real>
+internal class Real : IMatrixEntry<Real>
 {
 	readonly double backingValue;
 
@@ -39,6 +39,10 @@ internal class Real : IField<Real>
 	public static bool operator ==(Real? a, Real? b) => a?.Equals(b) ?? b is null;
 
 	public static bool operator !=(Real? a, Real? b) => !(a == b);
+
+	public bool IsZero() => backingValue == 0;
+
+	public bool IsOne() => backingValue == 1;
 
 	public static Real operator +(Real left, Real right)
 	{
