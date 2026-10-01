@@ -5,4 +5,6 @@ namespace GaussJordanElim.MatrixEntities;
 internal interface IMatrixEntry<T> : IField<T> where T : IField<T>
 {
 	bool IsZero();
+
+	bool IsOne();
 }
