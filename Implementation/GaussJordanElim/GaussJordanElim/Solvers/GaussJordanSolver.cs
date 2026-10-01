@@ -2,9 +2,9 @@
 
 namespace GaussJordanElim.Solvers;
 
-internal class GaussJordanSolver : IMatrixSolver
+internal class GaussJordanSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>, new()
 {
-	public T[,] Solve<T>(T[,] matrix) where T : IMatrixEntry<T>, new()
+	public T[,] Solve(T[,] matrix)
 	{
 		// The pivot column needs to be stored outside the main elimination loop since it depends
 		// on the last pivot column from previous elimination rounds
@@ -51,7 +51,7 @@ internal class GaussJordanSolver : IMatrixSolver
 				candidateNonZeroCellRowIndex++;
 				if (candidateNonZeroCellRowIndex == rowCount)
 				{
-					candidateNonZeroCellRowIndex++;
+					candidateNonZeroCellRowIndex = rowToGiveLeading1Index;
 					pivotColumnIndex++;
 
 					if (pivotColumnIndex == colCount)
