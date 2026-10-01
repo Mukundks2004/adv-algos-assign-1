@@ -67,7 +67,7 @@ internal static class MatrixUtils
 		return result;
 	}
 
-	public static T[,] AdjoinMatrices<T>(T[,] first, T[,] second) where T : IDeepCloneable<T>, new()
+	public static T[,] JoinMatrices<T>(T[,] first, T[,] second) where T : IDeepCloneable<T>, new()
 	{
 		int firstRows = first.GetLength(0);
 		int firstCols = first.GetLength(1);
@@ -113,6 +113,32 @@ internal static class MatrixUtils
 			for (int col = 0; col < inputColumnCount; col++)
 			{
 				result[row, col] = new Fraction(input[row, col]);
+			}
+		}
+
+		return result;
+	}
+
+	public static Fraction?[,] CreateFractionMatrixFromNullableIntArray(int?[,] input)
+	{
+		var inputRowCount = input.GetLength(0);
+		var inputColumnCount = input.GetLength(1);
+
+		var result = new Fraction?[inputRowCount, inputColumnCount];
+
+		for (int row = 0; row < inputRowCount; row++)
+		{
+			for (int col = 0; col < inputColumnCount; col++)
+			{
+				var cell = input[row, col];
+				if (cell is int value)
+				{
+					result[row, col] = new Fraction(value);
+				}
+				else
+				{
+					result[row, col] = null;
+				}
 			}
 		}
 
