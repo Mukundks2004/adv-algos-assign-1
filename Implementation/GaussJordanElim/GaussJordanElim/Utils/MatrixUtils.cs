@@ -1,4 +1,5 @@
 ﻿using GaussJordanElim.Abstractions;
+using GaussJordanElim.Implementations;
 
 namespace GaussJordanElim.Utils;
 
@@ -99,4 +100,22 @@ internal static class MatrixUtils
 	public static T Get<T>(T[,] matrix, int row, int col) => matrix[row, col];
 
 	public static int CountNulls<T>(T[,] array) => array.Cast<T>().Count(element => element == null);
+
+	public static Fraction[,] CreateFractionMatrixFromIntArray(int[,] input)
+	{
+		var inputRowCount = input.GetLength(0);
+		var inputColumnCount = input.GetLength(1);
+
+		var result = new Fraction[inputRowCount, inputColumnCount];
+
+		for (int row = 0; row < inputRowCount; row++)
+		{
+			for (int col = 0; col < inputColumnCount; col++)
+			{
+				result[row, col] = new Fraction(input[row, col]);
+			}
+		}
+
+		return result;
+	}
 }

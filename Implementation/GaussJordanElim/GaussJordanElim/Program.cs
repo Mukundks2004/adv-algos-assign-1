@@ -1,9 +1,22 @@
-﻿namespace GaussJordanElim;
+﻿using GaussJordanElim.Implementations;
+using GaussJordanElim.Utils;
+
+namespace GaussJordanElim;
 
 public class Program
 {
 	public static void Main()
 	{
-		Console.WriteLine("Hello, World!");
+		int[,] sampleMatrix = {
+			{ 1, 1, 1 },
+			{ 2, -3, 1 },
+			{ -1, 2, -1 }
+		};
+
+		var solver = new GaussJordanSolver();
+		var sampleMatrixOverFraction = MatrixUtils.CreateFractionMatrixFromIntArray(sampleMatrix);
+
+		var result = solver.Solve(sampleMatrixOverFraction);
+		MatrixUtils.PrintMatrix(result);
 	}
 }
