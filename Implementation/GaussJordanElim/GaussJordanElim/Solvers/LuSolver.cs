@@ -3,7 +3,7 @@ using GaussJordanElim.Utils;
 
 namespace GaussJordanElim.Solvers;
 
-internal class LuSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>, new()
+internal class LuSolver<T> : IMatrixSolver<T> where T : class, IMatrixEntry<T>, new()
 {
 	/*
 	 * Some things to keep in mind about this method:
@@ -13,7 +13,9 @@ internal class LuSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>, new()
 	 * vectors to solve for and if there are fewer variables than pieces of information it
 	 * will fail outright
 	 */
-	public T[,] Solve(T[,] matrix)
+	public T[,] Solve(T[,] matrix) => SolveWithSteps(matrix).Result;
+
+	public (T[,] Result, List<SolverStep<T>> Steps) SolveWithSteps(T[,] matrix)
 	{
 		int rowCount = matrix.GetLength(0);
 		int colCount = matrix.GetLength(1);
@@ -48,6 +50,11 @@ internal class LuSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>, new()
 			l[row, row] = T.One.Clone();
 		}
 
+		var steps = new List<SolverStep<T>>
+		{
+			new(MatrixUtils.JoinMatrices(u, rhs), "Initial matrix (U starts as the input's coefficients, L starts as the identity matrix)"),
+		};
+
 		// 2) Converting L and U to lower and upper triangle form respectively via forward substitution
 		// similarly to the Gauss Jordan method, we need to ensure the pivot is non zero to enable 
 		// elementary row operations to clear the lower triangle of U. When a swap is made in U,
@@ -81,10 +88,14 @@ internal class LuSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>, new()
 				{
 					(rhs[pivotIndex, col], rhs[swapRowIndex, col]) = (rhs[swapRowIndex, col], rhs[pivotIndex, col]);
 				}
+
+				steps.Add(new SolverStep<T>(MatrixUtils.JoinMatrices(u, rhs), $"Swapped rows {RomanNumeralConverter.ToRoman(pivotIndex + 1)} and {RomanNumeralConverter.ToRoman(swapRowIndex + 1)} to bring a non zero pivot into column {pivotIndex + 1}"));
 			}
 
 			// Forward substitution algorithm is identical to Gauss Jordan
 			T pivotCell = u[pivotIndex, pivotIndex];
+
+			bool hasRowsToEliminate = pivotIndex + 1 < size;
 
 			for (int rowToEliminateIndex = pivotIndex + 1; rowToEliminateIndex < size; rowToEliminateIndex++)
 			{
@@ -95,6 +106,11 @@ internal class LuSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>, new()
 				{
 					u[rowToEliminateIndex, col] = u[rowToEliminateIndex, col] - (multiplier * u[pivotIndex, col]);
 				}
+			}
+
+			if (hasRowsToEliminate)
+			{
+				steps.Add(new SolverStep<T>(MatrixUtils.JoinMatrices(u, rhs), $"Eliminated entries below the pivot in column {pivotIndex + 1} using row {RomanNumeralConverter.ToRoman(pivotIndex + 1)} (the multiplier has been recorded in L)"));
 			}
 		}
 
@@ -124,6 +140,8 @@ internal class LuSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>, new()
 				y[row] = sum;
 			}
 
+			steps.Add(new SolverStep<T>(MatrixUtils.JoinMatrices(l, MatrixUtils.ToColumn(y)), $"Forward substitution: solved L y = Pb for the temp vector y (RHS column {rhsColIndex + 1})"));
+
 			T[] x = new T[size];
 
 			for (int row = size - 1; row >= 0; row--)
@@ -138,12 +156,16 @@ internal class LuSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>, new()
 				x[row] = sum / u[row, row];
 			}
 
+			steps.Add(new SolverStep<T>(MatrixUtils.JoinMatrices(u, MatrixUtils.ToColumn(x)),$"Back substitution: solved U x = y for the vector x (RHS column {rhsColIndex + 1})"));
+
 			for (int row = 0; row < size; row++)
 			{
 				result[row, size + rhsColIndex] = x[row];
 			}
 		}
 
-		return result;
+		steps.Add(new SolverStep<T>(MatrixUtils.Clone(result), "Final solution matrix"));
+
+		return (result, steps);
 	}
 }
