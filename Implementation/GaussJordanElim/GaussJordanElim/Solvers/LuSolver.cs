@@ -98,11 +98,7 @@ internal class LuSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>, new()
 			}
 		}
 
-		// 3) With A = L * U (row swaps already baked into U, L and rhs consistently), solving
-		// A x = b reduces to two triangular solves per right hand side column: first L y = b
-		// (forward substitution - trivial since L has a unit diagonal), then U x = y (back
-		// substitution). This is the payoff of factorizing first: L and U are computed once and
-		// reused for every right hand side column.
+		// 3) forward and back substitution
 		T[,] result = MatrixUtils.MakeEmptyMatrix<T>(size, colCount);
 
 		for (int col = 0; col < size; col++)
