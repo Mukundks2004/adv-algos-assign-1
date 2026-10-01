@@ -144,4 +144,16 @@ internal static class MatrixUtils
 
 		return result;
 	}
+
+	public static T[,] ToColumn<T>(T[] vector) where T : IDeepCloneable<T>, new()
+	{
+		var column = MakeEmptyMatrix<T>(vector.Length, 1);
+
+		for (int i = 0; i < vector.Length; i++)
+		{
+			column[i, 0] = vector[i].Clone();
+		}
+
+		return column;
+	}
 }
