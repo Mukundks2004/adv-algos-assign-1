@@ -29,16 +29,16 @@ public class Program
 			{ 3,     null,     null }
 		};
 
-		//var gaussJordanSolver = new GaussJordanSolver<Fraction>();
-		//var rrefSampleOverFraction = MatrixUtils.CreateFractionMatrixFromIntArray(rrefSample);
+		var gaussJordanSolver = new GaussJordanSolver<Fraction>();
+		var rrefSampleOverFraction = MatrixUtils.CreateFractionMatrixFromIntArray(rrefSample);
 
-		//var rrefResult = gaussJordanSolver.Solve(rrefSampleOverFraction);
-		//MatrixUtils.PrintMatrix(rrefResult);
+		var rrefResult = gaussJordanSolver.Solve(rrefSampleOverFraction);
+		MatrixUtils.PrintMatrix(rrefResult);
 
-		var magicSquareSolver = new MagicSquareSolver<Fraction>();
-		var magicSquareSampleOverFraction = MatrixUtils.CreateFractionMatrixFromNullableIntArray(magicSquareSample2);
+		//var magicSquareSolver = new MagicSquareSolver<Fraction>();
+		//var magicSquareSampleOverFraction = MatrixUtils.CreateFractionMatrixFromNullableIntArray(magicSquareSample2);
 
-		var magicSquareResult = magicSquareSolver.Solve(magicSquareSampleOverFraction);
-		MatrixUtils.PrintMatrix(magicSquareResult);
+		//var magicSquareResult = magicSquareSolver.Solve(magicSquareSampleOverFraction);
+		//MatrixUtils.PrintMatrix(magicSquareResult);
 	}
 }
