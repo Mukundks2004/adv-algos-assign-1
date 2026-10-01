@@ -6,5 +6,10 @@ defaultTargets = ["GaussJordanFormalization"]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`
 relaxedAutoImplicit = false
 
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.34.1"
+
 [[lean_lib]]
 name = "GaussJordanFormalization"

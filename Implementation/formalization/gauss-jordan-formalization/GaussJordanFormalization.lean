@@ -1,1 +1,9 @@
 import GaussJordanFormalization.MyNat
+import GaussJordanFormalization.Defs
+import GaussJordanFormalization.RowOps
+import GaussJordanFormalization.Structure
+import GaussJordanFormalization.Algorithm
+import GaussJordanFormalization.Invariant
+import GaussJordanFormalization.Uniqueness
+import GaussJordanFormalization.Correctness
+import GaussJordanFormalization.Solutions
