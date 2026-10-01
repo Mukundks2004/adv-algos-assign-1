@@ -12,9 +12,13 @@ Track: B
 
 I built multiple solvers that accept a system of linear equations and solve them for each variable.
 
+In this repo you will find these solvers, a web UI you can use to interface with it, a web API that connects the frontend to the backend, and a partial formalization of one of the solvers.
+
+The core focus of the repo is the solver `GaussJordanSolver<T>`.
+
 I built this in the language C# because I am very comfortable programming in that language, and because C# has good contract support especially for parametric polymorphism, co/contravariance and other tricky type level constructs that mathematical solvers benefit from.
 
-For example, solvers often work best over mathematical fields (such as the field of rationals or reals) and so developers often want to constrain logic at the type level to avoid loss of information like dodgy floating point arithmetic that may give incorrect answers.
+For example, solvers often work best over mathematical fields (such as the field of rationals or reals) and so developers often want to constrain logic at the type level to avoid loss of information like dodgy floating point arithmetic that may give incorrect answers when divisions happen.
 
 Data representation is complex, since I chose to use a nice type safe and very abstract implementation rather than a fast but janky C solution (maybe I'll do this next time). But in essence, a system of linear equations is mathematically encoded as an augmented matrix. This is an $n \times m$ grid over a field $\mathbb{F}$ whose rows represent equations and whose columns represent coefficients of independent variables, joined to a matrix of width $1$ whose rows are constants. This is represented as a 2D array of doubles for the demo, but is a generic (type indexed by a type) for developer convenience.
 
