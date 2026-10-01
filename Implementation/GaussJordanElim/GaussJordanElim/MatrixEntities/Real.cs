@@ -40,6 +40,8 @@ internal class Real : IMatrixEntry<Real>
 
 	public static bool operator !=(Real? a, Real? b) => !(a == b);
 
+	public double ToDouble() => backingValue;
+
 	public bool IsZero() => backingValue == 0;
 
 	public bool IsOne() => backingValue == 1;
