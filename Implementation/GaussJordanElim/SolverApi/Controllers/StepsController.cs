@@ -1,4 +1,8 @@
+using GaussJordanElim.MatrixEntities;
+using GaussJordanElim.Solvers;
 using Microsoft.AspNetCore.Mvc;
+using SolverApi.Mapping;
+using SolverApi.Models;
 
 namespace SolverApi.Controllers;
 
@@ -6,16 +10,25 @@ namespace SolverApi.Controllers;
 [Route("[controller]")]
 public class StepsController : ControllerBase
 {
-    [HttpGet("GetSteps")]
-    public ActionResult<string[][]> GetSteps()
+    [HttpPost("GetSteps")]
+    public ActionResult<List<SolveStepDto>> GetSteps([FromBody] SolveRequestDto request)
     {
-        var steps = new string[][]
+        if (request.Matrix is null || request.Matrix.Length == 0 || request.Matrix.Any(row => row is null || row.Length == 0))
         {
-            new[] { "Step 1", "Build coefficient matrix" },
-            new[] { "Step 2", "Reduce to row echelon form" },
-            new[] { "Step 3", "Back substitute to solve" },
-        };
+            return BadRequest("Matrix must be a non-empty, non-jagged 2D array.");
+        }
 
-        return Ok(steps);
+        try
+        {
+            var matrix = MatrixMapper.ToRealMatrix(request.Matrix);
+            var solver = MatrixSolverFactory.Create<Real>(request.SolveType);
+            var (_, steps) = solver.SolveWithSteps(matrix);
+
+            return Ok(MatrixMapper.ToStepDtos(steps));
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }
