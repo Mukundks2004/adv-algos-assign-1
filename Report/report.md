@@ -273,6 +273,8 @@ Another example of when the AI was unhelpful was when I provided it a specificat
 
 ## What Was Truly Understood?
 
-100% of it, every single line was meticulously reviewed and committed. I am ready to defend any piece of code in this repo.
+100% of C# or algorithm code, every single line was meticulously reviewed and committed. I am ready to defend any piece of code in this repo.
 
-Except for the frontend stuff, I just wanted it to work so I hit go and stopped iterating when it looked good.
+The lean stuff I am pretty confident about given I discarded everything I didn't understand. But since it isn't functionally tested like the code is I might have missed something.
+
+The frontend stuff not so much, I just wanted it to work so I hit go and stopped iterating when it looked good.
