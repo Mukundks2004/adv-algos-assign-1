@@ -3,5 +3,6 @@
 public enum SolveType
 {
 	GaussJordan,
-	Lu
+	Lu,
+	MagicSquare
 }
