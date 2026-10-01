@@ -67,7 +67,9 @@ internal class Fraction : IMatrixEntry<Fraction>
 		int denominator = left.denominator * right.denominator;
 		int numerator = (left.numerator * right.denominator) + (left.denominator * right.numerator);
 
-		return new Fraction(numerator, denominator);
+		var result = new Fraction(numerator, denominator);
+		result.Simplify();
+		return result;
 	}
 
 	public static Fraction operator -(Fraction left, Fraction right)
@@ -75,7 +77,9 @@ internal class Fraction : IMatrixEntry<Fraction>
 		int denominator = left.denominator * right.denominator;
 		int numerator = (left.numerator * right.denominator) - (left.denominator * right.numerator);
 
-		return new Fraction(numerator, denominator);
+		var result = new Fraction(numerator, denominator);
+		result.Simplify();
+		return result;
 	}
 
 	public static Fraction operator *(Fraction left, Fraction right)
@@ -83,7 +87,9 @@ internal class Fraction : IMatrixEntry<Fraction>
 		int denominator = left.denominator * right.denominator;
 		int numerator = left.numerator * right.numerator;
 
-		return new Fraction(numerator, denominator);
+		var result = new Fraction(numerator, denominator);
+		result.Simplify();
+		return result;
 	}
 
 	public static Fraction operator /(Fraction left, Fraction right)
@@ -96,7 +102,9 @@ internal class Fraction : IMatrixEntry<Fraction>
 		int numerator = left.numerator * right.denominator;
 		int denominator = left.denominator * right.numerator;
 
-		return new Fraction(numerator, denominator);
+		var result = new Fraction(numerator, denominator);
+		result.Simplify();
+		return result;
 	}
 
 	public override string ToString()
