@@ -1,0 +1,6 @@
+@SolverApi_HostAddress = http://localhost:5070
+
+GET {{SolverApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
