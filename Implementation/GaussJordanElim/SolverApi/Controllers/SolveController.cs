@@ -18,6 +18,11 @@ public class SolveController : ControllerBase
             return BadRequest("Matrix must be a non-empty, non-jagged 2D array.");
         }
 
+        if (request.SolveType != SolveType.MagicSquare && request.Matrix.Any(row => row.Any(cell => cell is null)))
+        {
+            return BadRequest("All cells must contain a value for this solver type.");
+        }
+
         try
         {
             var matrix = MatrixMapper.ToRealMatrix(request.Matrix);
@@ -29,6 +34,10 @@ public class SolveController : ControllerBase
         catch (ArgumentException ex)
         {
             return BadRequest(ex.Message);
+        }
+        catch (DivideByZeroException)
+        {
+            return BadRequest("Matrix is singular and cannot be solved.");
         }
     }
 }
