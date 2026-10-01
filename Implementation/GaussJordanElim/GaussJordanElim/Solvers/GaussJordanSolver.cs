@@ -1,11 +1,19 @@
 ﻿using GaussJordanElim.MatrixEntities;
+using GaussJordanElim.Utils;
 
 namespace GaussJordanElim.Solvers;
 
-internal class GaussJordanSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>, new()
+internal class GaussJordanSolver<T> : IMatrixSolver<T> where T : class, IMatrixEntry<T>, new()
 {
-	public T[,] Solve(T[,] matrix)
+	public T[,] Solve(T[,] matrix) => SolveWithSteps(matrix).Result;
+
+	public (T[,] Result, List<SolverStep<T>> Steps) SolveWithSteps(T[,] matrix)
 	{
+		var steps = new List<SolverStep<T>>
+		{
+			new(MatrixUtils.Clone(matrix), "Initial matrix"),
+		};
+
 		// The pivot column needs to be stored outside the main elimination loop since it depends
 		// on the last pivot column from previous elimination rounds
 
@@ -71,6 +79,11 @@ internal class GaussJordanSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>
 					(matrix[rowToGiveLeading1Index, columnIndex], matrix[rowToBeSwappedWithCurrentRowToGetLeading1Index, columnIndex]);
 			}
 
+			if (rowToBeSwappedWithCurrentRowToGetLeading1Index != rowToGiveLeading1Index)
+			{
+				steps.Add(new SolverStep<T>(MatrixUtils.Clone(matrix), $"Swapped rows {RomanNumeralConverter.ToRoman(rowToGiveLeading1Index + 1)} and {RomanNumeralConverter.ToRoman(rowToBeSwappedWithCurrentRowToGetLeading1Index + 1)} to bring a non-zero pivot into row {RomanNumeralConverter.ToRoman(rowToGiveLeading1Index + 1)}, column {pivotColumnIndex + 1}"));
+			}
+
 			// 4) The juicy part: first divide this entire row by the leading cell value (to normalize it). Then for
 			// every other cell n in the same column on row r, subtract r times n from r. This will zero the cell n 
 			// while preserving the consistency of the system of linear equations given by the matrix.
@@ -88,6 +101,8 @@ internal class GaussJordanSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>
 					matrix[rowToGiveLeading1Index, cellToNormalizeIndex] = matrix[rowToGiveLeading1Index, cellToNormalizeIndex] / currentCell;
 				}
 
+				steps.Add(new SolverStep<T>(MatrixUtils.Clone(matrix), $"Normalized row {RomanNumeralConverter.ToRoman(rowToGiveLeading1Index + 1)} by dividing by {currentCell} to create a leading 1 in column {pivotColumnIndex + 1}"));
+
 				for (int rowToZeroIndex = 0; rowToZeroIndex < rowCount; rowToZeroIndex++)
 				{
 					// We don't want to zero the current row
@@ -100,11 +115,15 @@ internal class GaussJordanSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>
 						}
 					}
 				}
+
+				steps.Add(new SolverStep<T>(MatrixUtils.Clone(matrix), $"Eliminated column {pivotColumnIndex + 1} using row {RomanNumeralConverter.ToRoman(rowToGiveLeading1Index + 1)} as the pivot, zeroing every other entry in that column"));
 			}
 
 			pivotColumnIndex++;
 		}
 
-		return matrix;
+		steps.Add(new SolverStep<T>(MatrixUtils.Clone(matrix), "Final matrix in reduced row echelon form (RREF)"));
+
+		return (matrix, steps);
 	}
 }
