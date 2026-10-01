@@ -7,3 +7,5 @@ result[row, size * size] = T.Zero.Clone() - T.One.Clone();
 ```
 
 Fix this by putting some kind of harness around it that auto clones it.
+
+Rename steps controller to solve controller.
