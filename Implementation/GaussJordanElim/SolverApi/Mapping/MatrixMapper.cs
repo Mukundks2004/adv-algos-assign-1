@@ -6,7 +6,7 @@ namespace SolverApi.Mapping;
 
 internal static class MatrixMapper
 {
-	public static Real[,] ToRealMatrix(double[][] matrix)
+	public static Real[,] ToRealMatrix(double?[][] matrix)
 	{
 		int rowCount = matrix.Length;
 		int colCount = rowCount == 0 ? 0 : matrix[0].Length;
@@ -22,7 +22,8 @@ internal static class MatrixMapper
 
 			for (int col = 0; col < colCount; col++)
 			{
-				result[row, col] = new Real(matrix[row][col]);
+				var cell = matrix[row][col];
+				result[row, col] = cell.HasValue ? new Real(cell.Value) : null!;
 			}
 		}
 
