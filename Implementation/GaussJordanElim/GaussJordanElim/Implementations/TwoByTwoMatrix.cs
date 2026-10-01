@@ -2,7 +2,7 @@
 
 namespace GaussJordanElim.Implementations;
 
-internal class TwoByTwoMatrix<T> : IField<TwoByTwoMatrix<T>> where T : IRing<T>
+internal class TwoByTwoMatrix<T> : IField<TwoByTwoMatrix<T>> where T : IMatrixEntry<T>
 {
 	readonly T a, b, c, d;
 
@@ -22,9 +22,12 @@ internal class TwoByTwoMatrix<T> : IField<TwoByTwoMatrix<T>> where T : IRing<T>
 		this.d = d;
 	}
 
-	public static TwoByTwoMatrix<T> Zero => throw new NotImplementedException();
+	static readonly TwoByTwoMatrix<T> zero = new(T.Zero, T.Zero, T.Zero, T.Zero);
+	static readonly TwoByTwoMatrix<T> one = new(T.One, T.Zero, T.Zero, T.One);
 
-	public static TwoByTwoMatrix<T> One => throw new NotImplementedException();
+	public static TwoByTwoMatrix<T> Zero => zero;
+
+	public static TwoByTwoMatrix<T> One => one;
 
 	public TwoByTwoMatrix<T> Clone()
 	{
@@ -61,11 +64,40 @@ internal class TwoByTwoMatrix<T> : IField<TwoByTwoMatrix<T>> where T : IRing<T>
 
 	public static TwoByTwoMatrix<T> operator *(TwoByTwoMatrix<T> left, TwoByTwoMatrix<T> right)
 	{
-		throw new NotImplementedException();
+		return new TwoByTwoMatrix<T>(
+			left.a * right.a + left.b * right.c,
+			left.a * right.b + left.b * right.d,
+			left.c * right.a + left.d * right.c,
+			left.c * right.b + left.d * right.d
+		);
 	}
 
 	public static TwoByTwoMatrix<T> operator /(TwoByTwoMatrix<T> left, TwoByTwoMatrix<T> right)
 	{
-		throw new NotImplementedException();
+		var determinantRight = right.a * right.d - right.b * right.c;
+
+		if (determinantRight.IsZero())
+		{
+			throw new DivideByZeroException();
+		}
+
+		var inverseRight = new TwoByTwoMatrix<T>(
+			right.d / determinantRight,
+			Minus(right.b) / determinantRight,
+			Minus(right.c) / determinantRight,
+			right.a / determinantRight
+		);
+
+		return left * inverseRight;
+	}
+
+	public override string ToString()
+	{
+		return $"{a} {b} {c} {d}";
+	}
+
+	static T Minus(T arg)
+	{
+		return T.Zero - arg;
 	}
 }
