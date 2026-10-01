@@ -2,7 +2,7 @@
 
 namespace GaussJordanElim.Solvers;
 
-internal interface IMatrixSolver
+internal interface IMatrixSolver<T> where T : IMatrixEntry<T>, new()
 {
-	T[,] Solve<T>(T[,] matrix) where T : IMatrixEntry<T>, new();
+	T[,] Solve(T[,] matrix);
 }
