@@ -61,7 +61,8 @@ internal class MagicSquareSolver : IMatrixSolver
 
 		var adjointVector = MatrixUtils.MakeEmptyMatrix<T>(size * 2 + 2, 1);
 
-		var newColCount = MatrixUtils.CountNulls();
+
+		var newColCount = MatrixUtils.CountNulls(result);
 
 		var solver = new GaussJordanSolver();
 		return solver.Solve(square);
