@@ -64,8 +64,6 @@ internal class MagicSquareSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>
 		var solver = new GaussJordanSolver<T>();
 		var solvedMatrix = solver.Solve(augmentedMatrix);
 
-		MatrixUtils.PrintMatrix(solvedMatrix);
-
 		var result = MatrixUtils.MakeEmptyMatrix<T>(size, size);
 
 		int solvedVariableIndex = 0;
