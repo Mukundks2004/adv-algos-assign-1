@@ -15,7 +15,7 @@ internal class Fraction : IMatrixEntry<Fraction>
 	public Fraction()
 	{
 		numerator = 0;
-		denominator = 0;
+		denominator = 1;
 	}
 
 	public Fraction(int numerator)
