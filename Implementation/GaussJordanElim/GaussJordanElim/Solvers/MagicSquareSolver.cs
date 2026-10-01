@@ -1,13 +1,14 @@
-﻿using GaussJordanElim.Abstractions;
+﻿using GaussJordanElim.MatrixEntities;
 using GaussJordanElim.Utils;
 
-namespace GaussJordanElim.Implementations;
+namespace GaussJordanElim.Solvers;
 
 internal class MagicSquareSolver : IMatrixSolver
 {
 	public T[,] Solve<T>(T[,] square) where T : IMatrixEntry<T>, new()
 	{
-		var size = square.GetLength(0); // Size is also referred to as 'n'
+		// Size is also referred to as 'n'
+		var size = square.GetLength(0);
 		var cols = square.GetLength(1);
 
 		if (cols != size)

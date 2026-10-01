@@ -1,7 +1,7 @@
-﻿using GaussJordanElim.Abstractions;
+﻿using GaussJordanElim.MatrixEntities;
 using GaussJordanElim.Utils;
 
-namespace GaussJordanElim.Implementations;
+namespace GaussJordanElim.Solvers;
 
 internal class LuSolver : IMatrixSolver
 {

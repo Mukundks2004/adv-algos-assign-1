@@ -1,6 +1,6 @@
 ﻿using GaussJordanElim.Abstractions;
 
-namespace GaussJordanElim.Implementations;
+namespace GaussJordanElim.MatrixEntities;
 
 internal class Real : IField<Real>
 {

@@ -1,4 +1,6 @@
-﻿namespace GaussJordanElim.Abstractions;
+﻿using GaussJordanElim.MatrixEntities;
+
+namespace GaussJordanElim.Solvers;
 
 internal interface IMatrixSolver
 {

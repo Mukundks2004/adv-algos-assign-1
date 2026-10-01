@@ -1,6 +1,6 @@
-﻿using GaussJordanElim.Abstractions;
+﻿using GaussJordanElim.MatrixEntities;
 
-namespace GaussJordanElim.Implementations;
+namespace GaussJordanElim.Solvers;
 
 internal class GaussJordanSolver : IMatrixSolver
 {

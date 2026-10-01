@@ -1,4 +1,6 @@
-﻿namespace GaussJordanElim.Abstractions;
+﻿using GaussJordanElim.Abstractions;
+
+namespace GaussJordanElim.MatrixEntities;
 
 internal interface IMatrixEntry<T> : IField<T> where T : IField<T>
 {

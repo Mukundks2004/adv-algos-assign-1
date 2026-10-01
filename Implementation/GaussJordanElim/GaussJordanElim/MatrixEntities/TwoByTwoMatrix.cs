@@ -1,6 +1,6 @@
 ﻿using GaussJordanElim.Abstractions;
 
-namespace GaussJordanElim.Implementations;
+namespace GaussJordanElim.MatrixEntities;
 
 internal class TwoByTwoMatrix<T> : IField<TwoByTwoMatrix<T>> where T : IMatrixEntry<T>
 {

@@ -1,5 +1,5 @@
 ﻿using GaussJordanElim.Abstractions;
-using GaussJordanElim.Implementations;
+using GaussJordanElim.MatrixEntities;
 
 namespace GaussJordanElim.Utils;
 
