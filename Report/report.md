@@ -123,9 +123,9 @@ I had the following requirements:
 - user must be able to enter any value in the cell
 - user must be able to see the steps of the algorithm to understand that GJ is happening
 
-These minimal requirements made it pretty straightforward to invoke the tool because the input hardly has to be formatted after it is taken from the user, so there is fundamentally not much connecting that needs to be done in the first place.
+These minimal requirements made it pretty straightforward to invoke the tool because the input hardly has to be formatted after it is taken from the user, so there is fundamentally not much connecting that needs to be done in the first place. User gives array, take array, give to algo, take result, give to user.
 
-HTTP WebApis are pretty basic.
+To meet the second criteria, I had the algorithms send back steps in the form of a string description alongside the state of the matrix, that was displayed in a slide format.
 
 I still tried to make the interface nice to use, and added an 'i' in the top right for information.
 
