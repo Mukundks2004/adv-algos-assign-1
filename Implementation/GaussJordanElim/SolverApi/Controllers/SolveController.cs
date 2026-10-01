@@ -8,7 +8,7 @@ namespace SolverApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class StepsController : ControllerBase
+public class SolveController : ControllerBase
 {
     [HttpPost("GetSteps")]
     public ActionResult<List<SolveStepDto>> GetSteps([FromBody] SolveRequestDto request)
