@@ -1,11 +1,11 @@
-import Mathlib.Tactic
-
 /-!
 # MyNat
 
 A hand-rolled copy of the natural numbers, used purely as a smoke test that the
 project is wired up correctly: it checks that custom inductive types, recursive
-definitions, `simp` lemmas and Mathlib tactics all work.
+definitions, `simp` lemmas and induction tactics all work.
+
+This file depends only on Lean core -- no Mathlib.
 -/
 
 namespace GaussJordanFormalization
@@ -25,7 +25,11 @@ def add : MyNat → MyNat → MyNat
 
 instance : Add MyNat := ⟨add⟩
 
-instance : Zero MyNat := ⟨MyNat.zero⟩
+instance : OfNat MyNat 0 := ⟨MyNat.zero⟩
+
+/-- Lets `induction` goals mentioning the `zero` constructor match the `0` literal. -/
+@[simp]
+theorem zero_eq : MyNat.zero = 0 := rfl
 
 @[simp]
 theorem add_zero (m : MyNat) : m + 0 = m := rfl
@@ -54,7 +58,7 @@ theorem add_assoc (m n k : MyNat) : m + n + k = m + (n + k) := by
   | zero => simp
   | succ k ih => simp [ih]
 
-/-- Convert to Lean's built-in `Nat`, so results can be compared with Mathlib's. -/
+/-- Convert to Lean's built-in `Nat`, so results can be sanity-checked. -/
 def toNat : MyNat → Nat
   | .zero => 0
   | .succ n => n.toNat + 1
