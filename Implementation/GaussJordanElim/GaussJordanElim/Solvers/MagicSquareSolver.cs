@@ -3,7 +3,7 @@ using GaussJordanElim.Utils;
 
 namespace GaussJordanElim.Solvers;
 
-internal class MagicSquareSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>, new()
+internal class MagicSquareSolver<T> : IMatrixSolver<T> where T : class, IMatrixEntry<T>, new()
 {
 	public T[,] Solve(T?[,] square)
 	{

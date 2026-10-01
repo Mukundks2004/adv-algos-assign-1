@@ -4,7 +4,7 @@ namespace GaussJordanElim.Solvers;
 
 internal static class MatrixSolverFactory
 {
-	public static IMatrixSolver<T> Create<T>(SolveType solveType) where T : IMatrixEntry<T>, new()
+	public static IMatrixSolver<T> Create<T>(SolveType solveType) where T : class, IMatrixEntry<T>, new()
 	{
 		return solveType switch
 		{
