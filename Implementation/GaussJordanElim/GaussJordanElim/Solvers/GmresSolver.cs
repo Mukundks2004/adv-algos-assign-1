@@ -8,7 +8,7 @@ internal class GmresSolver<T> : IMatrixSolver<T> where T : IMatrixEntry<T>, new(
 
 	public GmresSolver()
 	{
-
+		throw new NotImplementedException();
 	}
 
 	public T[,] Solve(T[,] matrix)
