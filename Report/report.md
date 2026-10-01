@@ -40,7 +40,7 @@ The core algorithm is located in the file `Implementation\GaussJordanElim\GaussJ
 
 # Track Specific Writeup
 
-As I chose track B, the majority of this writeup will focus on the inclusion of the Gauss-Jordan algorithm to solve magic squares.
+As I chose track B, the majority of this writeup will focus on the use of the Gauss-Jordan algorithm to solve magic squares.
 
 However, before that I want to briefly mention my progress with tracks A and C.
 
@@ -57,15 +57,18 @@ What I did get done:
 - Planned out what definitions I need
 - Planned out what kind of variants and properties I want to prove
 - Organized this into files (you can see this in the `README.md`)
-- Wrote out some of the definitions and AI generated the rest
-- AI generated the implementation
+- Wrote out some of the definitions (about half) and AI generated the rest
 - Went through all the definitions to confirm I understood them
 
-At this stage I asked the AI to generate the headers for the other sections I had outlined, but the result was thousands of lines long (just the headers!) and impossible to read myself, so I decided to submit my own work and abandoned this.
+At this stage I asked the AI to generate the headers for the other sections I had outlined, since I was not experienced enough to write them myself, but the result was thousands of lines long (just the headers!) and impossible to read, so I decided to submit my own work and abandoned this.
 
 ## Track B: The Gauss Jordan Algorithm for Solving Magic Squares
 
-The tool I have chosen to build is a magic square solver. You can build and run it by following the instructions in the README at the root of the repo.
+The tool I have chosen to build is a magic square solver.
+
+![interface](/Report/Resources/image.png)
+
+You can build and run it by following the instructions in the README at the root of the repo.
 
 What it does is solve magic squares.
 
@@ -91,24 +94,142 @@ And of course, we can get bigger magic squares too...
 
 It turns out, solving squares in the genearl case is not an impossible problem- it could be tedious for a human but perfect for a computer. Any of these systems of equations can be tackled algebraically, you just have to give every blank a variable name and write out your system of equations and start substituting and solving.
 
+## How Does the Algorithm Sit Inside It
+
 The algorithm to use here is called Gauss-Jordan Elimination, if you represent a system of equations as a matrix, GJ will manipulate the matrix in a way that keeps it consistent mathematically, but simplifies it for humans, the end result is a computer friendly result that is easily readable by a computer as "x = 1, y = 2, ...".
 
 The process to get from the UI to the algorithm is a bit lengthy. Essentially, the UI takes a magic square with some cells filled and some empty, then on "solve" it pads all empty cells with nulls and sends it to the backend via a http request. The backend instantiates the right solver via a factory.
 
-This solver formats
+This solver formats it the following way:
 
-Track B is more minimal:
+![AugmentedMatrix](/Report/Resources/aug.png)
 
-- Explain the tool, what it does
-- How does the algorithm sit inside it
-- How did I make the interface decisions for connecting the tool to user input (UI)
-- Worked example of it in use
+The Gauss Jordan algorithm is used to reduce it to RREF:
 
-### What I Learned
+![RREF](/Report/Resources/rref.png)
 
-- What surprised you?
-- What did you initially get wrong?
-- What is something you understand now that you didn't before starting?
+From which the results can be read off one by one and input back into the square matrix to be presented as a solution.
+
+The steps are also saved and presented to the user, for them to scroll forwards and backwards to see how the state of the square changes over time.
+
+## Interface Decisions
+
+I had the following requirements:
+
+- user must be able to enter any value in the cell
+- user must be able to see the steps of the algorithm to understand that GJ is happening
+
+These minimal requirements made it pretty straightforward to invoke the tool because the input hardly has to be formatted after it is taken from the user, so there is fundamentally not much connecting that needs to be done in the first place.
+
+HTTP WebApis are pretty basic.
+
+I still tried to make the interface nice to use, and added an 'i' in the top right for information.
+
+## Worked Examples
+
+The maths is pretty intensive to actually do any of the operations, but I thought I could take screenshots of an example output since I was smart and put the actual algorithm steps in the UI.
+
+Entering the data:
+
+![DataEntry](/Report/Resources/Practice/image.png)
+
+![CoefficientMatrix](/Report/Resources/Practice/coeff.png)
+
+![Condensed](/Report/Resources/Practice/cond.png)
+
+![Appended](/Report/Resources/Practice/app.png)
+
+![Swap](/Report/Resources/Practice/swap.png)
+
+![Normalize](/Report/Resources/Practice/norm.png)
+
+![Eliminate](/Report/Resources/Practice/elim.png)
+
+Repeat swap, normalize and eliminate 10 more times.
+
+![Final](/Report/Resources/Practice/fin.png)
+
+![Copy](/Report/Resources/Practice/copy.png)
+
+# What I Learned
+
+## What surprised you?
+
+Most of the standard stuff in this assignment (implementing the algo and learning the language) didn't surprise me. I deliberately picked an algorithm I had heard of before, and a language I knew how to program in. The lean stuff took some getting used to- I didn't expect mathlib to be so big, it took almost 2 hours to download and type check on my poor quality laptop.
+
+I didn't expect C# contracts to support me as much as they did, I remember attempting something similar a few years ago- a computational algebra library, and every step was painful because I kept trying to abstract away things and lock them in at the type level but C# didn't have enough support for it. Since then they've added default implementations in interfaces, static abstract members for interfaces, operators in interfaces, all of this made writing and editing contracts so much easier. When I was able to do a perfect polymorphic swap between the `Fraction` class and the `Real` class when I went from testing my own algorithm to the UI, it took 0 effort which was nice.
+
+I was surprised by how crappy the copilot line autocomplete is. I had to switch that off within 10 minutes of starting development on a new laptop.
+
+I was surprised that noone had attempted this approach to solving magic squares before. In fact, most people don't really appreciate the depth of the problem, and restrict magic squares to only 3x3, or only having fixed digits (from 1 to $n^2$), or being overdetermined to a point where solving them is either easy or impossible but never in between. When I googled for this on the internet after completing my implementation I couldn't find any other hits.
+
+![BadExample](/Report/Resources/badex.png)
+
+For example, even this website, the top hit, requires the magic constant to solve the square. Other websites are no better.
+
+The first time I heard about this algorithm, in discrete maths in my first year, I was surprised such a thing was possible! I'm happy I've progressed to a point where I can understand how it works and implement it.
+
+In fact, what surprises me today is that there is no faster method (excluding the ones that approximate). Both this algorithm, and the only other comparable one (LU decomposition) are on the order of $n^3$ for size $n$ in the implementation that I've made, and while they can be improved they can't be improved by much.
+
+Larger systems of linear equations, such as those solved by NESA to calculate how to scale schools in NSW for the HSC, are numerically approximated by other algorithms such as GMRES.
+
+## What did you initially get wrong?
+
+I messed up the contracts, loads of times.
+
+![Contract](/Report/Resources/contract.png)
+
+You can see in the git blame I've edited it at least 6 times. In reality it was probably more like 30 or 40 times.
+
+Requirements change, and how I think something is about to work changes.
+
+On my first go through I only included add, subtract, and multiply. Then I changed the members to make them static. Then I made them operators. Then I moved `Zero` and `One` in here from a different interface. I had `IRing` inherit from `Cloneable`, which was changed to a custom `IDeepCloneable<T>` at one point. The non type constraints, such as `new` and `class` came at differnt times when I realized the GJ algorithm needed this or the magic square algorithm needed that.
+
+I made tons of low level mistakes. For example, in the following code:
+
+```cs
+int candidateNonZeroCellRowIndex = rowToGiveLeading1Index;
+while (matrix[candidateNonZeroCellRowIndex, pivotColumnIndex].IsZero())
+{
+	candidateNonZeroCellRowIndex++;
+	if (candidateNonZeroCellRowIndex == rowCount)
+	{
+		candidateNonZeroCellRowIndex++; // <- this line was wrong
+		pivotColumnIndex++;
+
+		if (pivotColumnIndex == colCount)
+		{
+			pivotColumnIndex--;
+			break;
+		}
+	}
+}
+```
+
+I made a mistake, incrementing a variable when I should have set it to `rowToGiveLeading1Index;`.
+
+I think my variable names, as much as I tried to be incredibly specific about what they were, were too long and often made it hard to read my own code quickly as the codebase got bigger. That contributed to how long it took me to find the above bug.
+
+I didn't scope the requirements of the project accurately enough at the beginning which is why I had to change the interface a million times and waste time on refactors.
+
+I really should have had more helpers. It would have helped to have so many helpers, in the form of a fluent API or extension methods, to have so much logic tucked away in methods that accurately describe what they do from a _business_ perspective that reading the code is a non technical activity. For example,
+
+```cs
+int rowToBeSwappedWithCurrentRowToGetLeading1Index = candidateNonZeroCellRowIndex;
+for (int columnIndex = 0; columnIndex < colCount; columnIndex++)
+{
+	(matrix[rowToBeSwappedWithCurrentRowToGetLeading1Index, columnIndex], matrix[rowToGiveLeading1Index, columnIndex]) =
+		(matrix[rowToGiveLeading1Index, columnIndex], matrix[rowToBeSwappedWithCurrentRowToGetLeading1Index, columnIndex]);
+}
+```
+
+This is a swap rows procedure, I only used it once or twice so I didn't need to put it into a function for the sake of DRY, but if I had encapsulated it in a `Swap()` method, it would be clear from a high level perspective that this code was performing an elementary row operation; 5 or 6 long lines becomes a single function call. This really only occured to me when I was doing the lean definitions and I had to be extremely specific and low level in translating code constructs into business objects.
+
+## What is something you understand now that you didn't before starting?
+
+The biggest one is how the doolittle algorithm (part of LU solver) works, coming in I already knew GJ fairly well but learning doolittle/LU gave me a sense of scale. Now I know that forward/back substitution is a standard part of solving algorithms, and is common between Cholesky decomposition, QR decomposition, etc.
+
+Learning LU was good from an intuition perspective, because it is an algorithm traditionally executed via pen and paper in exams since it relies on a trick that hides how it works (similar to integration by parts, or the chain rule in maths) which is writing to L while eliminating in U, while preserving $L \cdot U = A$.
 
 > Specific examples carry far more weight than general statements. A sentence like "I eas surprised that the Fibonacci heap was slower than std::priority_queue on every workload I tried, and I now believe this is because of cache behaviour" is the kind of content that is being looked for.
 
